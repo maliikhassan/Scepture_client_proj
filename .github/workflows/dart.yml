@@ -14,32 +14,25 @@ jobs:
         with:
           channel: 'stable'
           architecture: x64
+      - run: flutter pub get
+      
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
-      - name: Install CocoaPods
-        run: pod install --repo-update
+      - run: pod repo update
         working-directory: ios
 
-      - name: Disable BUILD_LIBRARY_FOR_DISTRIBUTION
-        run: |
-          sed -i '' 's/BUILD_LIBRARY_FOR_DISTRIBUTION = YES;/BUILD_LIBRARY_FOR_DISTRIBUTION = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
+      - run: flutter build ios --release --no-codesign
 
-      - name: Build iOS (no code sign)
-        run: flutter build ios --release --no-codesign
-
-      - name: Prepare Payload folder
+      - run: mkdir Payload
         working-directory: build/ios/iphoneos
-        run: |
-          mkdir Payload
-          mv Runner.app Payload
 
-      - name: Package IPA
+      - run: mv Runner.app/ Payload
         working-directory: build/ios/iphoneos
+
+      - name: Zip output
         run: zip -qq -r -9 FlutterIpaExport.ipa Payload
+        working-directory: build/ios/iphoneos
 
-      - name: Upload IPA to release
+      - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
