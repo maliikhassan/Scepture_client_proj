@@ -1,0 +1,49 @@
+name: iOS-ipa-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: 🎉 iOS Build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          architecture: x64
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods
+        run: pod install --repo-update
+        working-directory: ios
+
+      - name: Disable BUILD_LIBRARY_FOR_DISTRIBUTION
+        run: |
+          sed -i '' 's/BUILD_LIBRARY_FOR_DISTRIBUTION = YES;/BUILD_LIBRARY_FOR_DISTRIBUTION = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
+
+      - name: Build iOS (no code sign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Prepare Payload folder
+        working-directory: build/ios/iphoneos
+        run: |
+          mkdir Payload
+          mv Runner.app Payload
+
+      - name: Package IPA
+        working-directory: build/ios/iphoneos
+        run: zip -qq -r -9 FlutterIpaExport.ipa Payload
+
+      - name: Upload IPA to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/ios/iphoneos/FlutterIpaExport.ipa
+          tag: v1.0
+          overwrite: true
+          body: "This is first release"
