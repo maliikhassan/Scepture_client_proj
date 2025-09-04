@@ -5,7 +5,22 @@ workflows:
       flutter: stable
       xcode: latest
     scripts:
+      # Clean Flutter & iOS build caches
+      - flutter clean
+      - flutter pub get
+
+      # Go to iOS folder and fix CocoaPods
+      - cd ios
+      - rm -rf Pods Podfile.lock
+      - pod repo update
+      - pod deintegrate
+      - pod install
+      - cd ..
+
+      # Now build for simulator (or real device if you need .ipa)
       - flutter build ios --simulator
+
+      # Package artifact
       - mkdir -p build/ios/ipa
       - zip -r build/ios/ipa/Runner.app.zip build/ios/iphonesimulator/Runner.app
     artifacts:
