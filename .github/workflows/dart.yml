@@ -16,7 +16,6 @@ jobs:
           architecture: x64
       - run: flutter pub get
       
-      - run: rm Podfile.lock
       - run: pod cache clean --all
       - run: sudo arch -x86_64 pod install --repo-update
       - run: pod repo update
