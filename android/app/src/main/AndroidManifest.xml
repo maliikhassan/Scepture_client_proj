@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.scapture">
+    package="com.lawrence.scapture">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -46,7 +46,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="com.example.scapture"
+                    android:scheme="com.lawrence.scapture"
                     android:host="reset-password" />
             </intent-filter>
         </activity>

@@ -1,4 +1,4 @@
-package com.example.scapture
+package com.lawrence.scapture
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

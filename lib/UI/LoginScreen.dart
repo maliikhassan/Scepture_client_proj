@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await Supabase.instance.client.auth.resetPasswordForEmail(
         email,
-        redirectTo: 'com.example.scapture://reset-password', // 👈 must match your manifest
+        redirectTo: 'com.lawrence.scapture://reset-password', // 👈 must match your manifest
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
